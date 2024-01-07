@@ -18,6 +18,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/post', [PostController::class, 'create']);
     Route::delete('/post/{id}', [PostController::class, 'delete']);
     Route::get('/post/{id}', [PostController::class, 'show']);
+    Route::put('/post/{id}', [PostController::class, 'update']);
     Route::middleware('admin')->group(function(){
         // admin only
     });

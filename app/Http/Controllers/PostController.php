@@ -45,6 +45,31 @@ class PostController extends Controller
 
         return response()->json([$post], 201);
     }
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'news_content' => 'required|string'
+        ]);
+
+        if ($validator->fails()){
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json(['message' => 'not found']);
+        }
+
+        $post->title = $request->title;
+        $post->news_content = $request->news_content;
+        $post->created_at = now();
+
+        $post->save();
+
+        return response()->json([$post], 200);
+    }
     public function delete($id)
     {
         $postDelete = Post::find($id);

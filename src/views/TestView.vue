@@ -3,17 +3,17 @@
     <form @submit.prevent="loginHandler">
         <h1 class="text-3xl" v-if="validation">{{ validation.message }}</h1>
         <input
-            v-model="email"
-            type="email"
-            name="email"
+            v-model="title"
+            type="text"
+            name="title"
             class="border border-black p-2"
             required
             autofocus
         />
         <input
-            v-model="password"
-            type="password"
-            name="password"
+            v-model="news_content"
+            type="text"
+            name="news_content"
             class="border border-black p-2"
             required
         />
@@ -27,46 +27,37 @@ import axios from "axios";
 export default {
     data() {
         return {
-            email: "",
-            password: "",
+            title: "",
+            news_content: "",
             validation: {},
         };
     },
     methods: {
         async loginHandler() {
             const formData = new FormData();
-            formData.append("email", this.email);
-            formData.append("password", this.password);
+            formData.append("title", this.title);
+            formData.append("news_content", this.news_content);
 
             try {
-                const response = await axios.post(
-                    "http://localhost:8000/api/login",
-                    formData
-                );
-                const token = response.data.access_token;
-                localStorage.setItem("token", token);
-                const roleCheck = await axios.get(
-                    "http://localhost:8000/api/profile",
-                    {
+                const response = await axios.put(
+                    "http://localhost:8000/api/post/4",
+                    formData, {
                         headers: {
-                            Authorization: `Bearer ${localStorage.getItem(
-                                "token"
-                            )}`,
-                        },
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                            "Content-Type" : "application/json"
+                        }
                     }
                 );
-                const role = roleCheck.data.role;
-                localStorage.setItem("role", role);
-                this.$router.push("/dashboard");
+
             } catch (error) {
                 this.validation = error.response.data;
             }
         },
     },
     created() {
-        if (localStorage.getItem("token")) {
-            this.$router.push("/dashboard");
-        }
+        // if (localStorage.getItem("token")) {
+        //     this.$router.push("/dashboard");
+        // }
     },
 };
 </script>
